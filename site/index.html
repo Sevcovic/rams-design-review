@@ -44,7 +44,6 @@
   .scene .frame { display: block; width: 100%; background: #141413; border: 0; border-radius: 12px; padding: 14px 10px; cursor: pointer; }
   .scene .frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .scene canvas { display: block; width: 100%; }
-  .scene figcaption { color: var(--muted); font-size: 13px; margin-top: 10px; text-align: center; }
   .actions { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
   .btn {
     display: inline-block; padding: 12px 20px; border-radius: 999px;
@@ -142,7 +141,6 @@
     </div>
     <figure class="scene">
       <button class="frame" type="button" aria-label="Change the orange detail on the portrait"><canvas id="scene" role="img" aria-label="Portrait of Petr Ševcovic drawn with code characters, with one orange detail"></canvas></button>
-      <figcaption>Click me</figcaption>
     </figure>
   </div>
 
@@ -301,9 +299,10 @@ curl -L https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md \
   const font = bold => (bold ? '700 ' : '') + (cw * 1.6) + 'px "JetBrains Mono", ui-monospace, Menlo, monospace';
   const fromSomewhere = () => { const a = rnd(0, Math.PI * 2), r = rnd(0.15, 0.9); return [COLS / 2 + Math.cos(a) * COLS * r, ROWS / 2 + Math.sin(a) * ROWS * r]; };
 
-  function introBase(now) {
+  function introBase(now, brk) {
     baseDone = false;
-    base = targets.map(t => { const [sx, sy] = fromSomewhere(); return { t, sx, sy, start: now + (t.y / ROWS) * 900 + rnd(0, 600), dur: rnd(1100, 1800), g: glyph() }; });
+    const lead = brk ? 550 : 0;
+    base = targets.map(t => { const [sx, sy] = fromSomewhere(); return { t, sx, sy, brk: brk ? now : null, start: now + lead + (t.y / ROWS) * 900 + rnd(0, 600), dur: rnd(1100, 1800), g: glyph() }; });
   }
   function nextAccent(now, delay = 0) {
     acc.forEach(p => { if (p.dir === 'in') { p.dir = 'out'; p.from = [p.t.x, p.t.y]; [p.ex, p.ey] = fromSomewhere(); p.start = now + rnd(0, 150); p.dur = rnd(500, 800); } });
@@ -321,6 +320,13 @@ curl -L https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md \
       const k = reduce ? 1 : Math.min(1, Math.max(0, (now - p.start) / p.dur));
       if (k < 1) busy = true;
       if (k >= 1 && hidden.has(p.t.x + ',' + p.t.y)) continue;
+      if (k <= 0 && p.brk !== null && !reduce) {
+        const b = ease(Math.min(1, (now - p.brk) / 500));
+        if (Math.random() < 0.12) p.g = glyph();
+        ctx.globalAlpha = 1 - 0.8 * b; ctx.fillStyle = b < 0.3 ? FG : ORANGE;
+        ctx.fillText(b < 0.2 ? p.t.ch : p.g, (p.t.x + (p.sx - p.t.x) * b + 0.5) * cw, (p.t.y + (p.sy - p.t.y) * b + 0.5) * ch);
+        continue;
+      }
       const e = ease(k);
       if (k < 0.9 && Math.random() < 0.12) p.g = glyph();
       ctx.globalAlpha = 0.2 + 0.8 * e;
@@ -346,10 +352,10 @@ curl -L https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md \
   }
   const kick = () => { if (!raf) raf = requestAnimationFrame(draw); };
 
-  function start() {
+  function start(brk) {
     const now = performance.now();
-    introBase(now);
-    nextAccent(now, reduce ? 0 : 2400);
+    introBase(now, brk);
+    nextAccent(now, reduce ? 0 : (brk ? 2900 : 2400));
     kick();
   }
   layout();
@@ -358,7 +364,7 @@ curl -L https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md \
     const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); begin(); } }, { threshold: 0.2 });
     io.observe(cv);
   } else begin();
-  btn.addEventListener('click', () => { if (!base.length) return; nextAccent(performance.now()); kick(); });
+  btn.addEventListener('click', () => { if (!base.length) return; start(true); });
   let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); kick(); }, 120); });
 })();
 </script>

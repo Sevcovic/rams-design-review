@@ -112,6 +112,8 @@
     color: var(--muted); font-size: 14px; border-top: 1px solid var(--line);
   }
   footer a { color: inherit; }
+  .support { margin-top: 28px; color: var(--muted); }
+  .support a { color: var(--accent); text-underline-offset: 3px; }
   @media (max-width: 560px) {
     main { padding-top: 64px; }
     .hero { grid-template-columns: 1fr; gap: 48px; }
@@ -269,9 +271,10 @@
 curl -L https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md \
   -o ~/.claude/skills/rams-design-review/SKILL.md</pre>
     <p>Then ask: <em>"Review this with Rams principles"</em> and attach your design.</p>
+    <p class="support">Found it useful? <a href="https://buymeacoffee.com/petrsevcovic" rel="noopener">Buy me a coffee</a></p>
   </section>
 </main>
-<footer>Made by Petr Ševcovic. Principles by Dieter Rams.</footer>
+<footer>Made by <a href="https://www.linkedin.com/in/petrsevcovic" rel="noopener">Petr Ševcovic</a> · <a href="https://buymeacoffee.com/petrsevcovic" rel="noopener">Buy me a coffee</a> · <a href="https://www.linkedin.com/in/petrsevcovic" rel="noopener">LinkedIn</a>. Principles by Dieter Rams.</footer>
 <script>
 (() => {
   const cv = document.getElementById('scene');

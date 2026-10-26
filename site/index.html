@@ -39,10 +39,12 @@
   .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); margin-bottom: 40px; }
   h1 { font-size: 44px; line-height: 1.1; font-weight: 600; letter-spacing: -0.02em; }
   .lead { font-size: 20px; color: var(--muted); margin-top: 20px; max-width: 34em; }
-  .scene { margin-top: 64px; }
-  .scene .frame { background: #141413; border-radius: 12px; padding: 32px 24px 0; overflow: hidden; }
-  .scene canvas { display: block; width: 100%; max-width: 560px; margin: 0 auto; cursor: pointer; }
-  .scene figcaption { color: var(--muted); font-size: 13px; margin-top: 12px; }
+  .hero { display: grid; grid-template-columns: 1fr 200px; gap: 40px; align-items: center; }
+  .scene { margin: 0; }
+  .scene .frame { display: block; width: 100%; background: #141413; border: 0; border-radius: 12px; padding: 14px 10px; cursor: pointer; }
+  .scene .frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .scene canvas { display: block; width: 100%; }
+  .scene figcaption { color: var(--muted); font-size: 13px; margin-top: 10px; text-align: center; }
   .actions { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
   .btn {
     display: inline-block; padding: 12px 20px; border-radius: 999px;
@@ -113,6 +115,8 @@
   footer a { color: inherit; }
   @media (max-width: 560px) {
     main { padding-top: 64px; }
+    .hero { grid-template-columns: 1fr; gap: 48px; }
+    .scene { width: 200px; }
     h1 { font-size: 34px; }
     .lead { font-size: 18px; }
     section { margin-top: 72px; }
@@ -126,18 +130,21 @@
 </head>
 <body>
 <main>
-  <div class="dot" aria-hidden="true"></div>
-  <h1>Rams Design Review</h1>
-  <p class="lead">A Claude skill that checks your design against Dieter Rams' ten principles and tells you which one each mistake breaks.</p>
-  <div class="actions">
-    <a class="btn primary" href="https://github.com/Sevcovic/rams-design-review">View on GitHub</a>
-    <a class="btn" href="https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md">Download SKILL.md</a>
+  <div class="hero">
+    <div>
+      <div class="dot" aria-hidden="true"></div>
+      <h1>Rams Design Review</h1>
+      <p class="lead">A Claude skill that checks your design against Dieter Rams' ten principles and tells you which one each mistake breaks.</p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/Sevcovic/rams-design-review">View on GitHub</a>
+        <a class="btn" href="https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md">Download SKILL.md</a>
+      </div>
+    </div>
+    <figure class="scene">
+      <button class="frame" type="button" aria-label="Change the orange detail on the portrait"><canvas id="scene" role="img" aria-label="Portrait of Petr Ševcovic drawn with code characters, with one orange detail"></canvas></button>
+      <figcaption>Click me</figcaption>
+    </figure>
   </div>
-
-  <figure class="scene">
-    <div class="frame"><canvas id="scene" role="img" aria-label="Portrait of Petr Ševcovic drawn with code characters"></canvas></div>
-    <figcaption>Petr Ševcovic, drawn with <code>. - &gt; &lt;</code>. Click to replay.</figcaption>
-  </figure>
 
   <section>
     <h2>The principles</h2>
@@ -271,59 +278,88 @@ curl -L https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md \
 (() => {
   const cv = document.getElementById('scene');
   if (!cv) return;
-  const ctx = cv.getContext('2d');
-  const ART = ["                                                ..                                                  ", "                                                                                                    ", "                                                                                                    ", "                                                   .---.          .                                 ", "                                                -<<>>>>-->.       ..                                ", "                                        .-----<<>>>>>>>>>>>     .  .                                ", "                                       -<<<<<<<>><<<>>>>><>-                                        ", "                                      -<<<><<<<<><<>>>>>><>>                                        ", "                                     .-<<<<<<<<>><<>>>>>>>>>.                                       ", "                                     .-<<<<<<<<<<<<<>>>>--<>>                                       ", "                                     -<<<<<<<>>><<>>>>>>--><>>     .                                ", "                                     .....-<<<>-... .-------<>    <<>                               ", "                                     .-..   .<<>-.     ..-<>>>  -<<>>-                              ", "                                     . .- .  <>>>- .  .---<>>>  <><>>.                              ", "                                    .<-<<>- .<><>>>-<<>>>>>>--. <>><>                               ", "                                    -<<<>>. <<<<<<>>>><<>>>>----<<<>>                               ", "                                    .<<<>> <<>>>-<<<<<<>>>>>----<<>-                                ", "                                     <<<>-  .<----<><<<>>>>-----                                    ", "                                     .<>>.   --..<>--<<>>>>-----                                    ", "                                      <.   .--..  .  .-<>>>>--->                                    ", "                                      <<>.  -----.....<>>>>>-->-                                    ", "                                      .<>>..----<<<<>>>>>>>--<>-                                    ", "                                       --<<<>><<<>>>>>><>--.<>>                                     ", "                                        .-<<<<<<>>><>>->-..<>>>                                     ", "                                          -<<<<<>>>---...-<>>>>-                                    ", "                                           .----...   ..-<>>>>--.                                   ", "                                                   .---<---<>>-->                                   ", "                                           .  .-<<-<>---<>>->>>-->.                                 ", "                                            ..<<<<>---<<>>>-----<<<>>>                              ", "                                            -.-<<>---<------<<<<<<>>>>>>-                           ", "                             <>-<<>>>>><<>. .-.--..---<<<<<<>>>>>>>>>><<<>>-                        ", "                           <<>><>>><>><>>>.  --.--<<<<<<<>>><<>>>>><<<<>>><<>>>.                    ", "                        <<<<><<>><>>-<<>-<<<<<<<<<>>>><>>><<>>>>><<<>><<<<<<<<<>>.                  ", "                       <>><<<<>><<>-<>-<>><<<<>>>>><<<>><<<>>>>><<>><<<<>><<<<<<<>>                 ", "                     .<>><<<<>><>>-<>.<<<>>><<<<<<<>>><<<>>>>><<>-<<>>>><<<<<<<<><>>                ", "                    <<<><<><>>>>>-<>-.<<<>><<<<>>>>><<<>>><>-<>><<>>><<<<<<<<<<<<><>>               ", "                   <<><><<<>>>>>--<>.<<<<<<<<>>>>>><<>>><>>-<><<>>><<<<<<<><<<<<>>>>>               ", "                   <<><<><<>>>>>-<>--<<<<<>>>><>><<>><<<>>-<><<><<<<<<<>>>>><<<<<>><>               ", "                  <<<>>><<>>><>-<>>.<<<<>>>><<><<<>><<>>><>><<><<<>>><<<<<<>><<<<>><>               ", "                 <><<<>><<>><><<<>>-<<<>>>><>><<>><<>>>><>-<<<<<<<><<<<<>>>>><<<<>><>.              ", "                <<><<<>><>-<<<<<<>-<<>>>><>><<<><<<><>><>--<<<<<<<<<<>>>>>>>><<<<>><>>              ", "               <<<>><<>-<>-<<<<<>>-<>>>><<><<<<<<><<>><>-<<<><<<<<<<>>>>><>>><<<><<>>>              ", "              <<<<>><>>->-<<<<><>><<>>>><<<<<>--<<<>><>-<<<<<<<<<>>>>><<<><>>><><<>>>>              ", "             -<><<<><>--<<<<<<><>><>>>><<<<<>> .-.-<>----<<<<>>>>><<<<>>>>>>>>>><<>>>>              ", "            <<<<<<<><>--<<<<<<><><<>>>-<<<<>>>- <.->---<<<<>>><<<<<>>><<>>>>>>>-<<><>>              ", "          .<<<<<<<<><>> -<<<><<>><<>>--<<<><<>> ----<<<<<>><<<<<>>>>>>>>>>>>>>-<<<><>>              ", "         .<<<<<<>><<>>-  <<>><<>><<>>-<<<<<<>>>>.-<<<<<<<<<<<>><><>>>>>>>>>>>--<<><<>               ", "         <<<<<<<<<>>>..<.<<>><<>><<>--<><<<<<>>- .--<<<<<>>>>>>>>>>>>>>>>>>>>--<<><>.               ", "        <<<<<<<<>>.     -<<>><<>><<>-<><<><>>>       ..-<<<<<>>>>><<<>>>>>>>-.<<><>>                ", "       <<<<<<<<>-     . .-<<><<>><>>-<><<>>>-      ........-<<<>>>>>>>>>>>>-.<<<<>>                 ", "      .<<<<<>>-    . .....  .-<>><>><>-<>>-.      ....----....-<<>>>>>>>>>-.-<<<>>>                 ", "      <<<<<<>-       .....                      ...----------....<<>>>>>>>..<<>>>>                  ", "     --<<>>>.      .......          ...........--------------....  -<>>>>..<<>>>>.                  ", "     -<<>----       .. ..  .. .....----------------->-------.....    <<>--<<>>>>>                   ", "    .---.-<<<>>           ......---------<<<>------<>-------...       ---<<<<>>>                    ", "   .-...-<<<><>>>-.        .......------<<<<>-----<>>------..          <>><<>>>>                    ", "   --------<<<<<<<>>         ....-.--------------<>>>----...      -<<<<<<>><<>>>                    ", "  .<<<>>-----<<<<<<<>.        ...---..-------<--<<>>--...       -<>><>>><<<<>>>.                    ", "  .<<<>>----<><<<<<<>>.          .--...---<<<>>>>>---...      -<><<>><>>>><<<>>                     ", "   <<<<>>--..---<<<<<>>.          ...  .-<<<<<>>>--...      -<><<><<>>>>>>>>>>>                     ", "  .<>><<<>>-------<<<<>-               .-<<<<<>>--.       .<<<><<>><<<>>>>>><>.                     ", "   .<>-...---<>><><<<<<>-               .--<<<>>-...     <<><<>><<><<<>><<>>>>                      ", "              ...-----.-.                .<<<>>--..    -<>>>><<>><>><><>><>>>                       ", "                      .. .-.-..<----.      .--..    .<<<>>>>><<>><<>><>><<<>                        ", "                      <><<><>-<<>>>>>-----...---<<<<<<<<<<>>><<<>><<>>>><<<>                        ", "                      <<>>><>><<>><>>--<<<<<<<<<<>>><<<<<<>>>><<>>><<>>>><<>                        "];
+  const btn = cv.parentElement, ctx = cv.getContext('2d');
+  const DATA = {"art": ["                                                                ", "                                                                ", "                                                                ", "                                                                ", "                                  .                             ", "                              .-<>>>-.                          ", "                         -<<<<<><>>>>>                          ", "                        -<<<<<><<>>>>>.                         ", "                        -<<<<<<<<>>>->>                         ", "                        --<<<>>---<>-->-   -                    ", "                        ..  .<-.   .-->- .<>.                   ", "                       ..--  <>>...--<>- <<>.                   ", "                       -<<>.<<<<<><>>>---<>>                    ", "                       .<>- <>-<<<<>>>--->-                     ", "                        <>.  -.---<<>>---                       ", "                        --  --. . -<>>---                       ", "                         <>---<<<>>>>-->-                       ", "                          -<<<<>>>>>-.<>.                       ", "                           -<<>>-...-<>>-                       ", "                            .  ...--<>>>>-                      ", "                            ..<<<<<<>---->-                     ", "                            .-<>-----<<<<<<>>>.                 ", "                 .<<<<>><<>  -.--<<<<<>>>>>><<>>>-              ", "               -<<<>>>>><><<<<<<>>>>><>>>><<<<<<<<>>            ", "              <<><<>>>-<-<><<<<>>>><<>>><<<<>>>><<<<>-          ", "            .<><<<>>>->-<<<<<<>>><<>>>><<<<>><<<<<<<<>          ", "            <<><<>>>-<>-<<<>>>><<>>>>><<<><<<<<><<<>>>-         ", "           -<<><>>><<>-<<>>>>><<><<>>><<<<<<<<<>><<>>>-         ", "          -<<<>>>-<<>><<>>>><<<<<>>>>-<<<<<<>>>>><<<>>>         ", "         -<<<>>>><<<><<>>><<<><<>>>><<<<<<>>>><>><<<<>>         ", "        .<<<>>><<<<<><<>><<<>-.-<>--<<<>>>><<<>>>>><<>>         ", "       <<<<<<>--<<<<><>>-<<<>> ---<<<<><<<<>>>>>>>-<<>>         ", "      <<<<<<>>- <<<<><>--<<<<>-.<<<<>><<<>>>>>>>>--<<>-         ", "     -<<<<<>-  .<><<><>-<<<<>>  ..-<<<<>>>>>>>>>>.<<>>          ", "    .<<<<>    ..-<<<><>>><>>.    ....--<<>>>>>>>.-<<>           ", "    <<<>>    .-.   ........    ..-----...<<>>>>--<<>-           ", "   .<<>>    ....       ......----------..  -<>--<>>>            ", "   ---<<>.       ....----<<>>---->----...    <<<<>>.            ", "  --.-<<<>>-      ....----------<>---..      -<><>>             ", "  <<>---<<<<>-     ..--.-------<>--..    -<<>>><<>>             ", "  <<>>----<<<>-      ....--<<>>>-..    -<>>>>>>><>.             ", "  <>><>----<<<>.         -<<<>>-.    .<<><><<>>>>>              ", "   .    .------.          .<<>-.   .<>><>>>><>>>>.              ", "              ------<--.   .--...-<<>>><<><>>><>>               ", "              <<>>><<>>><<<<<<<<<<<<<>>><>>>>><>>               "], "acc": {"watch": [[9, 34, "."], [9, 36, "."], [10, 34, "-"], [10, 36, "-"], [11, 34, "-"], [11, 36, "-"], [12, 34, "-"], [12, 36, "-"], [13, 34, "."], [13, 36, "."], [9, 35, ">"], [13, 35, "<"], [11, 35, "."]], "glasses": [[24, 10, "."], [24, 12, "."], [25, 10, "-"], [25, 12, "-"], [26, 10, "-"], [26, 12, "-"], [27, 10, "-"], [27, 12, "-"], [28, 10, "."], [28, 12, "."], [24, 11, ">"], [28, 11, "<"], [32, 10, "."], [32, 12, "."], [33, 10, "-"], [33, 12, "-"], [34, 10, "-"], [34, 12, "-"], [35, 10, "-"], [35, 12, "-"], [36, 10, "."], [36, 12, "."], [32, 11, ">"], [36, 11, "<"], [29, 11, "-"], [30, 11, "-"], [31, 11, "-"], [23, 11, "-"], [37, 11, "-"]], "dot": [[29, 30, "."], [29, 32, "."], [30, 30, "-"], [30, 32, "-"], [31, 30, "."], [31, 32, "."], [28, 31, ">"], [29, 31, "<"], [30, 31, ">"], [31, 31, "<"], [32, 31, ">"]]}};
+  const ART = DATA.art, ORDER = ['watch', 'glasses', 'dot'];
   const SET = '.-><', COLS = ART[0].length, ROWS = ART.length, ASPECT = 1.7;
+  const FG = '#ecebe6', MUTED = '#8f8e88', ORANGE = '#f76707';
   const targets = [];
   ART.forEach((row, y) => [...row].forEach((c, x) => { if (c !== ' ') targets.push({ x, y, ch: c }); }));
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let cw = 0, ch = 0, W = 0, H = 0, parts = [], start = 0, raf = 0;
+  let cw = 0, ch = 0, W = 0, H = 0, base = [], acc = [], hidden = new Set(), idx = -1, raf = 0, baseDone = false;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const ease = k => 1 - Math.pow(1 - k, 3);
+  const glyph = () => SET[(Math.random() * 4) | 0];
 
   function layout() {
     const dpr = window.devicePixelRatio || 1;
     W = cv.clientWidth; cw = W / COLS; ch = cw * ASPECT; H = ch * ROWS;
     cv.style.height = H + 'px'; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.font = (cw * 1.6) + 'px "JetBrains Mono", ui-monospace, Menlo, monospace';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   }
-  function seed() {
-    parts = targets.map(t => {
-      const a = Math.random() * Math.PI * 2, r = 0.15 + Math.random() * 0.75;
-      return {
-        t, sx: COLS / 2 + Math.cos(a) * COLS * r, sy: ROWS / 2 + Math.sin(a) * ROWS * r,
-        delay: (t.y / ROWS) * 900 + Math.random() * 600, dur: 1100 + Math.random() * 700,
-        scramble: SET[(Math.random() * 4) | 0]
-      };
-    });
+  const font = bold => (bold ? '700 ' : '') + (cw * 1.6) + 'px "JetBrains Mono", ui-monospace, Menlo, monospace';
+  const fromSomewhere = () => { const a = rnd(0, Math.PI * 2), r = rnd(0.15, 0.9); return [COLS / 2 + Math.cos(a) * COLS * r, ROWS / 2 + Math.sin(a) * ROWS * r]; };
+
+  function introBase(now) {
+    baseDone = false;
+    base = targets.map(t => { const [sx, sy] = fromSomewhere(); return { t, sx, sy, start: now + (t.y / ROWS) * 900 + rnd(0, 600), dur: rnd(1100, 1800), g: glyph() }; });
   }
-  const ease = k => 1 - Math.pow(1 - k, 3);
+  function nextAccent(now, delay = 0) {
+    acc.forEach(p => { if (p.dir === 'in') { p.dir = 'out'; p.from = [p.t.x, p.t.y]; [p.ex, p.ey] = fromSomewhere(); p.start = now + rnd(0, 150); p.dur = rnd(500, 800); } });
+    idx = (idx + 1) % ORDER.length;
+    const cells = DATA.acc[ORDER[idx]];
+    cells.forEach(([x, y, c]) => { const [sx, sy] = fromSomewhere(); acc.push({ t: { x, y, ch: c }, dir: 'in', sx, sy, start: now + delay + rnd(0, 350), dur: rnd(700, 1100), g: glyph() }); });
+  }
+
   function draw(now) {
     ctx.clearRect(0, 0, W, H);
-    let done = true;
-    for (const p of parts) {
-      const k = reduce ? 1 : Math.min(1, Math.max(0, (now - start - p.delay) / p.dur));
-      if (k < 1) done = false;
+    let busy = false;
+    hidden = new Set(acc.filter(p => p.dir === 'in' && (reduce || now - p.start >= p.dur)).map(p => p.t.x + ',' + p.t.y));
+    ctx.font = font(false);
+    for (const p of base) {
+      const k = reduce ? 1 : Math.min(1, Math.max(0, (now - p.start) / p.dur));
+      if (k < 1) busy = true;
+      if (k >= 1 && hidden.has(p.t.x + ',' + p.t.y)) continue;
       const e = ease(k);
-      const x = (p.sx + (p.t.x - p.sx) * e + 0.5) * cw, y = (p.sy + (p.t.y - p.sy) * e + 0.5) * ch;
-      let glyph = p.t.ch;
-      if (k < 0.9) { if (Math.random() < 0.12) p.scramble = SET[(Math.random() * 4) | 0]; glyph = p.scramble; }
+      if (k < 0.9 && Math.random() < 0.12) p.g = glyph();
       ctx.globalAlpha = 0.2 + 0.8 * e;
-      ctx.fillStyle = k >= 1 ? '#ecebe6' : (p.t.ch === '.' ? '#8f8e88' : '#f76707');
-      ctx.fillText(glyph, x, y);
+      ctx.fillStyle = k >= 1 ? FG : (p.t.ch === '.' ? MUTED : ORANGE);
+      ctx.fillText(k < 0.9 ? p.g : p.t.ch, (p.sx + (p.t.x - p.sx) * e + 0.5) * cw, (p.sy + (p.t.y - p.sy) * e + 0.5) * ch);
+    }
+    if (!busy && !baseDone) baseDone = true;
+    ctx.font = font(true); ctx.fillStyle = ORANGE;
+    acc = acc.filter(p => !(p.dir === 'out' && now - p.start > p.dur));
+    for (const p of acc) {
+      const k = reduce ? 1 : Math.min(1, Math.max(0, (now - p.start) / p.dur));
+      if (k < 1) busy = true;
+      if (k <= 0 && p.dir === 'in') continue;
+      const e = ease(k);
+      let x, y, a, g = p.t.ch;
+      if (p.dir === 'in') { x = p.sx + (p.t.x - p.sx) * e; y = p.sy + (p.t.y - p.sy) * e; a = 0.2 + 0.8 * e; if (k < 0.85) { if (Math.random() < 0.15) p.g = glyph(); g = p.g; } }
+      else { x = p.from[0] + (p.ex - p.from[0]) * e; y = p.from[1] + (p.ey - p.from[1]) * e; a = 1 - e; }
+      ctx.globalAlpha = a;
+      ctx.fillText(g, (x + 0.5) * cw, (y + 0.5) * ch);
     }
     ctx.globalAlpha = 1;
-    if (!done) raf = requestAnimationFrame(draw);
+    if (busy) raf = requestAnimationFrame(draw); else raf = 0;
   }
-  function play() { cancelAnimationFrame(raf); seed(); start = performance.now(); raf = requestAnimationFrame(draw); }
+  const kick = () => { if (!raf) raf = requestAnimationFrame(draw); };
+
+  function start() {
+    const now = performance.now();
+    introBase(now);
+    nextAccent(now, reduce ? 0 : 2400);
+    kick();
+  }
   layout();
-  const begin = () => (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(play);
+  const begin = () => (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(start);
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); begin(); } }, { threshold: 0.2 });
     io.observe(cv);
   } else begin();
-  cv.addEventListener('click', play);
-  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); if (parts.length) draw(performance.now()); }, 120); });
+  btn.addEventListener('click', () => { if (!base.length) return; nextAccent(performance.now()); kick(); });
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); kick(); }, 120); });
 })();
 </script>
 </body>

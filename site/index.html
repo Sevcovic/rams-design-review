@@ -40,7 +40,8 @@
   h1 { font-size: 44px; line-height: 1.1; font-weight: 600; letter-spacing: -0.02em; }
   .lead { font-size: 20px; color: var(--muted); margin-top: 20px; max-width: 34em; }
   .scene { margin-top: 64px; }
-  .scene canvas { display: block; width: 100%; cursor: pointer; }
+  .scene .frame { background: #141413; border-radius: 12px; padding: 32px 24px 0; overflow: hidden; }
+  .scene canvas { display: block; width: 100%; max-width: 560px; margin: 0 auto; cursor: pointer; }
   .scene figcaption { color: var(--muted); font-size: 13px; margin-top: 12px; }
   .actions { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
   .btn {
@@ -134,8 +135,8 @@
   </div>
 
   <figure class="scene">
-    <canvas id="scene" role="img" aria-label="Code characters assembling into a calm desk scene: a shelf on the wall, a desk with a few simple objects and one orange accent"></canvas>
-    <figcaption>Order from noise. Click to replay.</figcaption>
+    <div class="frame"><canvas id="scene" role="img" aria-label="Portrait of Petr Ševcovic drawn with code characters"></canvas></div>
+    <figcaption>Petr Ševcovic, drawn with <code>. - &gt; &lt;</code>. Click to replay.</figcaption>
   </figure>
 
   <section>
@@ -271,65 +272,44 @@ curl -L https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md \
   const cv = document.getElementById('scene');
   if (!cv) return;
   const ctx = cv.getContext('2d');
-  const COLS = 64, ROWS = 22, SET = '.-><';
-  const grid = new Map();
-  const put = (x, y, ch, accent) => { if (x >= 0 && x < COLS && y >= 0 && y < ROWS) grid.set(x + ',' + y, { x, y, ch, accent: !!accent }); };
-  const hline = (x0, x1, y, ch = '-', a) => { for (let x = x0; x <= x1; x++) put(x, y, ch, a); };
-  const box = (x0, y0, x1, y1, a) => {
-    hline(x0 + 1, x1 - 1, y0, '-', a); hline(x0 + 1, x1 - 1, y1, '-', a);
-    for (let y = y0 + 1; y < y1; y++) { put(x0, y, '>', a); put(x1, y, '<', a); }
-    put(x0, y0, '.', a); put(x1, y0, '.', a); put(x0, y1, '.', a); put(x1, y1, '.', a);
-  };
-  const dots = (x0, y0, x1, y1, step = 2, a) => { for (let y = y0; y <= y1; y++) for (let x = x0 + (y % 2); x <= x1; x += step) put(x, y, '.', a); };
-
-  // Wall shelf: three units
-  box(2, 1, 17, 6); dots(4, 2, 15, 5);
-  box(20, 1, 40, 6); hline(23, 37, 3); hline(23, 31, 4); put(35, 4, '.'); put(37, 4, '.');
-  box(43, 1, 61, 6); dots(45, 2, 51, 5); hline(54, 59, 3); hline(54, 59, 4);
-  hline(2, 61, 7, '.');
-  // Desk
-  hline(0, 63, 17); hline(3, 60, 18, '.');
-  for (let y = 19; y < ROWS; y++) { put(5, y, '>'); put(58, y, '<'); }
-  // Objects on the desk
-  box(7, 12, 15, 16); dots(9, 13, 13, 15);
-  box(25, 13, 31, 16, true); hline(27, 29, 14, '-', true); put(28, 15, '.', true);
-  box(39, 9, 50, 16); hline(41, 48, 11); hline(41, 48, 12); dots(41, 14, 48, 15);
-  put(54, 16, '>'); put(55, 16, '-'); put(56, 16, '<');
-
-  const targets = [...grid.values()];
+  const ART = ["                                                ..                                                  ", "                                                                                                    ", "                                                                                                    ", "                                                   .---.          .                                 ", "                                                -<<>>>>-->.       ..                                ", "                                        .-----<<>>>>>>>>>>>     .  .                                ", "                                       -<<<<<<<>><<<>>>>><>-                                        ", "                                      -<<<><<<<<><<>>>>>><>>                                        ", "                                     .-<<<<<<<<>><<>>>>>>>>>.                                       ", "                                     .-<<<<<<<<<<<<<>>>>--<>>                                       ", "                                     -<<<<<<<>>><<>>>>>>--><>>     .                                ", "                                     .....-<<<>-... .-------<>    <<>                               ", "                                     .-..   .<<>-.     ..-<>>>  -<<>>-                              ", "                                     . .- .  <>>>- .  .---<>>>  <><>>.                              ", "                                    .<-<<>- .<><>>>-<<>>>>>>--. <>><>                               ", "                                    -<<<>>. <<<<<<>>>><<>>>>----<<<>>                               ", "                                    .<<<>> <<>>>-<<<<<<>>>>>----<<>-                                ", "                                     <<<>-  .<----<><<<>>>>-----                                    ", "                                     .<>>.   --..<>--<<>>>>-----                                    ", "                                      <.   .--..  .  .-<>>>>--->                                    ", "                                      <<>.  -----.....<>>>>>-->-                                    ", "                                      .<>>..----<<<<>>>>>>>--<>-                                    ", "                                       --<<<>><<<>>>>>><>--.<>>                                     ", "                                        .-<<<<<<>>><>>->-..<>>>                                     ", "                                          -<<<<<>>>---...-<>>>>-                                    ", "                                           .----...   ..-<>>>>--.                                   ", "                                                   .---<---<>>-->                                   ", "                                           .  .-<<-<>---<>>->>>-->.                                 ", "                                            ..<<<<>---<<>>>-----<<<>>>                              ", "                                            -.-<<>---<------<<<<<<>>>>>>-                           ", "                             <>-<<>>>>><<>. .-.--..---<<<<<<>>>>>>>>>><<<>>-                        ", "                           <<>><>>><>><>>>.  --.--<<<<<<<>>><<>>>>><<<<>>><<>>>.                    ", "                        <<<<><<>><>>-<<>-<<<<<<<<<>>>><>>><<>>>>><<<>><<<<<<<<<>>.                  ", "                       <>><<<<>><<>-<>-<>><<<<>>>>><<<>><<<>>>>><<>><<<<>><<<<<<<>>                 ", "                     .<>><<<<>><>>-<>.<<<>>><<<<<<<>>><<<>>>>><<>-<<>>>><<<<<<<<><>>                ", "                    <<<><<><>>>>>-<>-.<<<>><<<<>>>>><<<>>><>-<>><<>>><<<<<<<<<<<<><>>               ", "                   <<><><<<>>>>>--<>.<<<<<<<<>>>>>><<>>><>>-<><<>>><<<<<<<><<<<<>>>>>               ", "                   <<><<><<>>>>>-<>--<<<<<>>>><>><<>><<<>>-<><<><<<<<<<>>>>><<<<<>><>               ", "                  <<<>>><<>>><>-<>>.<<<<>>>><<><<<>><<>>><>><<><<<>>><<<<<<>><<<<>><>               ", "                 <><<<>><<>><><<<>>-<<<>>>><>><<>><<>>>><>-<<<<<<<><<<<<>>>>><<<<>><>.              ", "                <<><<<>><>-<<<<<<>-<<>>>><>><<<><<<><>><>--<<<<<<<<<<>>>>>>>><<<<>><>>              ", "               <<<>><<>-<>-<<<<<>>-<>>>><<><<<<<<><<>><>-<<<><<<<<<<>>>>><>>><<<><<>>>              ", "              <<<<>><>>->-<<<<><>><<>>>><<<<<>--<<<>><>-<<<<<<<<<>>>>><<<><>>><><<>>>>              ", "             -<><<<><>--<<<<<<><>><>>>><<<<<>> .-.-<>----<<<<>>>>><<<<>>>>>>>>>><<>>>>              ", "            <<<<<<<><>--<<<<<<><><<>>>-<<<<>>>- <.->---<<<<>>><<<<<>>><<>>>>>>>-<<><>>              ", "          .<<<<<<<<><>> -<<<><<>><<>>--<<<><<>> ----<<<<<>><<<<<>>>>>>>>>>>>>>-<<<><>>              ", "         .<<<<<<>><<>>-  <<>><<>><<>>-<<<<<<>>>>.-<<<<<<<<<<<>><><>>>>>>>>>>>--<<><<>               ", "         <<<<<<<<<>>>..<.<<>><<>><<>--<><<<<<>>- .--<<<<<>>>>>>>>>>>>>>>>>>>>--<<><>.               ", "        <<<<<<<<>>.     -<<>><<>><<>-<><<><>>>       ..-<<<<<>>>>><<<>>>>>>>-.<<><>>                ", "       <<<<<<<<>-     . .-<<><<>><>>-<><<>>>-      ........-<<<>>>>>>>>>>>>-.<<<<>>                 ", "      .<<<<<>>-    . .....  .-<>><>><>-<>>-.      ....----....-<<>>>>>>>>>-.-<<<>>>                 ", "      <<<<<<>-       .....                      ...----------....<<>>>>>>>..<<>>>>                  ", "     --<<>>>.      .......          ...........--------------....  -<>>>>..<<>>>>.                  ", "     -<<>----       .. ..  .. .....----------------->-------.....    <<>--<<>>>>>                   ", "    .---.-<<<>>           ......---------<<<>------<>-------...       ---<<<<>>>                    ", "   .-...-<<<><>>>-.        .......------<<<<>-----<>>------..          <>><<>>>>                    ", "   --------<<<<<<<>>         ....-.--------------<>>>----...      -<<<<<<>><<>>>                    ", "  .<<<>>-----<<<<<<<>.        ...---..-------<--<<>>--...       -<>><>>><<<<>>>.                    ", "  .<<<>>----<><<<<<<>>.          .--...---<<<>>>>>---...      -<><<>><>>>><<<>>                     ", "   <<<<>>--..---<<<<<>>.          ...  .-<<<<<>>>--...      -<><<><<>>>>>>>>>>>                     ", "  .<>><<<>>-------<<<<>-               .-<<<<<>>--.       .<<<><<>><<<>>>>>><>.                     ", "   .<>-...---<>><><<<<<>-               .--<<<>>-...     <<><<>><<><<<>><<>>>>                      ", "              ...-----.-.                .<<<>>--..    -<>>>><<>><>><><>><>>>                       ", "                      .. .-.-..<----.      .--..    .<<<>>>>><<>><<>><>><<<>                        ", "                      <><<><>-<<>>>>>-----...---<<<<<<<<<<>>><<<>><<>>>><<<>                        ", "                      <<>>><>><<>><>>--<<<<<<<<<<>>><<<<<<>>>><<>>><<>>>><<>                        "];
+  const SET = '.-><', COLS = ART[0].length, ROWS = ART.length, ASPECT = 1.7;
+  const targets = [];
+  ART.forEach((row, y) => [...row].forEach((c, x) => { if (c !== ' ') targets.push({ x, y, ch: c }); }));
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let cw = 0, ch = 0, W = 0, H = 0, parts = [], start = 0, raf = 0;
 
   function layout() {
     const dpr = window.devicePixelRatio || 1;
-    W = cv.clientWidth; cw = W / COLS; ch = cw * 1.7; H = ch * ROWS;
+    W = cv.clientWidth; cw = W / COLS; ch = cw * ASPECT; H = ch * ROWS;
     cv.style.height = H + 'px'; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.font = (cw * 1.55) + 'px "JetBrains Mono", ui-monospace, Menlo, monospace';
+    ctx.font = (cw * 1.6) + 'px "JetBrains Mono", ui-monospace, Menlo, monospace';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   }
   function seed() {
-    parts = targets.map(t => ({
-      t, sx: Math.random() * COLS, sy: Math.random() * ROWS,
-      delay: (t.x / COLS) * 700 + Math.random() * 500, dur: 900 + Math.random() * 500,
-      scramble: SET[(Math.random() * 4) | 0]
-    }));
+    parts = targets.map(t => {
+      const a = Math.random() * Math.PI * 2, r = 0.15 + Math.random() * 0.75;
+      return {
+        t, sx: COLS / 2 + Math.cos(a) * COLS * r, sy: ROWS / 2 + Math.sin(a) * ROWS * r,
+        delay: (t.y / ROWS) * 900 + Math.random() * 600, dur: 1100 + Math.random() * 700,
+        scramble: SET[(Math.random() * 4) | 0]
+      };
+    });
   }
   const ease = k => 1 - Math.pow(1 - k, 3);
   function draw(now) {
-    const css = getComputedStyle(document.documentElement);
-    const fg = css.getPropertyValue('--fg').trim(), ac = css.getPropertyValue('--accent').trim(), mu = css.getPropertyValue('--muted').trim();
     ctx.clearRect(0, 0, W, H);
     let done = true;
     for (const p of parts) {
-      let k = reduce ? 1 : Math.min(1, Math.max(0, (now - start - p.delay) / p.dur));
+      const k = reduce ? 1 : Math.min(1, Math.max(0, (now - start - p.delay) / p.dur));
       if (k < 1) done = false;
       const e = ease(k);
       const x = (p.sx + (p.t.x - p.sx) * e + 0.5) * cw, y = (p.sy + (p.t.y - p.sy) * e + 0.5) * ch;
       let glyph = p.t.ch;
-      if (k < 0.85) { if (Math.random() < 0.15) p.scramble = SET[(Math.random() * 4) | 0]; glyph = p.scramble; }
-      ctx.globalAlpha = 0.25 + 0.75 * e;
-      ctx.fillStyle = k >= 1 ? (p.t.accent ? ac : fg) : mu;
+      if (k < 0.9) { if (Math.random() < 0.12) p.scramble = SET[(Math.random() * 4) | 0]; glyph = p.scramble; }
+      ctx.globalAlpha = 0.2 + 0.8 * e;
+      ctx.fillStyle = k >= 1 ? '#ecebe6' : (p.t.ch === '.' ? '#8f8e88' : '#f76707');
       ctx.fillText(glyph, x, y);
     }
     ctx.globalAlpha = 1;
@@ -339,12 +319,11 @@ curl -L https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md \
   layout();
   const begin = () => (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(play);
   if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); begin(); } }, { threshold: 0.3 });
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); begin(); } }, { threshold: 0.2 });
     io.observe(cv);
   } else begin();
   cv.addEventListener('click', play);
   let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); if (parts.length) draw(performance.now()); }, 120); });
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => parts.length && draw(performance.now()));
 })();
 </script>
 </body>

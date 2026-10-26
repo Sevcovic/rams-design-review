@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rams Design Review</title>
+<meta name="description" content="A Claude skill that reviews your design against Dieter Rams' 10 principles and tells you which one each mistake breaks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f3ef;
+    --fg: #1a1a1a;
+    --muted: #6b6b66;
+    --line: #d9d7d0;
+    --card: #fbfaf7;
+    --accent: #e8590c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141413;
+      --fg: #ecebe6;
+      --muted: #8f8e88;
+      --line: #2c2c2a;
+      --card: #1b1b1a;
+      --accent: #f76707;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 17px/1.55 Inter, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 96px 24px 64px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); margin-bottom: 40px; }
+  h1 { font-size: 44px; line-height: 1.1; font-weight: 600; letter-spacing: -0.02em; }
+  .lead { font-size: 20px; color: var(--muted); margin-top: 20px; max-width: 34em; }
+  .actions { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 12px 20px; border-radius: 999px;
+    font-weight: 500; font-size: 15px; text-decoration: none;
+    border: 1px solid var(--fg); color: var(--fg);
+  }
+  .btn.primary { background: var(--fg); color: var(--bg); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  section { margin-top: 96px; }
+  h2 { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 24px; }
+  ol.principles { list-style: none; border-top: 1px solid var(--line); }
+  ol.principles li {
+    display: grid; grid-template-columns: 40px 1fr; gap: 8px;
+    padding: 14px 0; border-bottom: 1px solid var(--line);
+  }
+  ol.principles span { color: var(--muted); font-variant-numeric: tabular-nums; }
+  ol.principles li:last-child b { color: var(--accent); }
+  ol.principles b { font-weight: 500; }
+  .steps p { margin-bottom: 16px; }
+  .steps p:last-child { margin-bottom: 0; }
+  .steps strong { font-weight: 600; }
+  .sample {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 24px; font-size: 15px;
+  }
+  .sample .sev { color: var(--accent); font-weight: 600; }
+  .sample dl { display: grid; grid-template-columns: 72px 1fr; gap: 6px 12px; margin-top: 14px; }
+  .sample dt { color: var(--muted); }
+  .caption { color: var(--muted); font-size: 14px; margin-top: 12px; }
+  pre {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 20px; overflow-x: auto;
+    font: 400 14px/1.6 "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  .install p { margin-bottom: 12px; }
+  .install p + pre { margin-bottom: 28px; }
+  footer {
+    max-width: 720px; margin: 0 auto; padding: 32px 24px 48px;
+    color: var(--muted); font-size: 14px; border-top: 1px solid var(--line);
+  }
+  footer a { color: inherit; }
+  @media (max-width: 560px) {
+    main { padding-top: 64px; }
+    h1 { font-size: 34px; }
+    .lead { font-size: 18px; }
+    section { margin-top: 72px; }
+    .sample dl { grid-template-columns: 1fr; gap: 2px; }
+    .sample dd { margin-bottom: 8px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="dot" aria-hidden="true"></div>
+  <h1>Rams Design Review</h1>
+  <p class="lead">A Claude skill that checks your design against Dieter Rams' ten principles and tells you which one each mistake breaks.</p>
+  <div class="actions">
+    <a class="btn primary" href="https://github.com/Sevcovic/rams-design-review">View on GitHub</a>
+    <a class="btn" href="https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md">Download SKILL.md</a>
+  </div>
+
+  <section>
+    <h2>The principles</h2>
+    <ol class="principles">
+      <li><span>01</span><b>Innovative</b></li>
+      <li><span>02</span><b>Useful</b></li>
+      <li><span>03</span><b>Aesthetic</b></li>
+      <li><span>04</span><b>Understandable</b></li>
+      <li><span>05</span><b>Unobtrusive</b></li>
+      <li><span>06</span><b>Honest</b></li>
+      <li><span>07</span><b>Long-lasting</b></li>
+      <li><span>08</span><b>Thorough down to the last detail</b></li>
+      <li><span>09</span><b>Environmentally friendly</b></li>
+      <li><span>10</span><b>As little design as possible</b></li>
+    </ol>
+  </section>
+
+  <section class="steps">
+    <h2>How it works</h2>
+    <p><strong>Share the design.</strong> A screenshot, a Figma link, a live URL or UI code.</p>
+    <p><strong>Answer up to four questions.</strong> The goal, the users, how finished it is, and what it has to follow. It skips anything the design already answers.</p>
+    <p><strong>Get the review.</strong> A one-line verdict, issues ranked by severity with a concrete fix for each, and a table covering all ten principles. Only real problems are reported.</p>
+  </section>
+
+  <section>
+    <h2>Sample finding</h2>
+    <div class="sample">
+      <div><span class="sev">High</span> · No "today" or "next shift" emphasis</div>
+      <dl>
+        <dt>Where</dt><dd>This week's shift list</dd>
+        <dt>Problem</dt><dd>All shifts look identical. Nothing shows which one is next.</dd>
+        <dt>Breaks</dt><dd>#2 Useful</dd>
+        <dt>Fix</dt><dd>Highlight the next shift with a "Today" or "Tomorrow" label and dim past ones.</dd>
+      </dl>
+    </div>
+    <p class="caption">From a review of a staff scheduling app.</p>
+  </section>
+
+  <section class="install">
+    <h2>Install</h2>
+    <p><strong>Claude app:</strong> download SKILL.md, put it in a folder named <code>rams-design-review</code>, zip it and upload under Settings → Capabilities → Skills.</p>
+    <p><strong>Claude Code:</strong></p>
+    <pre>mkdir -p ~/.claude/skills/rams-design-review
+curl -L https://github.com/Sevcovic/rams-design-review/raw/main/skill/SKILL.md \
+  -o ~/.claude/skills/rams-design-review/SKILL.md</pre>
+    <p>Then ask: <em>"Review this with Rams principles"</em> and attach your design.</p>
+  </section>
+</main>
+<footer>Made by Petr Ševčovič. Principles by Dieter Rams.</footer>
+</body>
+</html>

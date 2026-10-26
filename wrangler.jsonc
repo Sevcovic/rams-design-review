@@ -1,0 +1,8 @@
+{
+  "name": "rams-design-review",
+  "compatibility_date": "2026-10-26",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./site"
+  }
+}

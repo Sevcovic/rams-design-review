@@ -40,4 +40,4 @@ cp skill/SKILL.md ~/.claude/skills/rams-design-review/
 
 ## Author
 
-Petr Ševčovič
+Petr Ševcovic

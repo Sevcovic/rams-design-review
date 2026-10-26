@@ -50,13 +50,27 @@
   section { margin-top: 96px; }
   h2 { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 24px; }
   ol.principles { list-style: none; border-top: 1px solid var(--line); }
-  ol.principles li {
-    display: grid; grid-template-columns: 40px 1fr; gap: 8px;
-    padding: 14px 0; border-bottom: 1px solid var(--line);
+  ol.principles li { border-bottom: 1px solid var(--line); }
+  ol.principles summary {
+    display: grid; grid-template-columns: 40px 1fr 20px; gap: 8px; align-items: center;
+    padding: 14px 0; cursor: pointer; list-style: none;
   }
+  ol.principles summary::-webkit-details-marker { display: none; }
+  ol.principles summary::after {
+    content: "+"; color: var(--muted); font-size: 20px; line-height: 1; text-align: right;
+    transition: transform 160ms ease-out;
+  }
+  ol.principles details[open] summary::after { transform: rotate(45deg); }
+  ol.principles summary:hover b { text-decoration: underline; text-underline-offset: 3px; }
+  ol.principles summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   ol.principles span { color: var(--muted); font-variant-numeric: tabular-nums; }
   ol.principles li:last-child b { color: var(--accent); }
   ol.principles b { font-weight: 500; }
+  .pd { padding: 0 0 18px 48px; font-size: 15px; }
+  .pd p + p { margin-top: 8px; }
+  .pd .check { color: var(--muted); }
+  .pd .check em { font-style: normal; color: var(--fg); }
+  @media (max-width: 560px) { .pd { padding-left: 0; } }
   .steps p { margin-bottom: 16px; }
   .steps p:last-child { margin-bottom: 0; }
   .steps strong { font-weight: 600; }
@@ -119,16 +133,16 @@
   <section>
     <h2>The principles</h2>
     <ol class="principles">
-      <li><span>01</span><b>Innovative</b></li>
-      <li><span>02</span><b>Useful</b></li>
-      <li><span>03</span><b>Aesthetic</b></li>
-      <li><span>04</span><b>Understandable</b></li>
-      <li><span>05</span><b>Unobtrusive</b></li>
-      <li><span>06</span><b>Honest</b></li>
-      <li><span>07</span><b>Long-lasting</b></li>
-      <li><span>08</span><b>Thorough down to the last detail</b></li>
-      <li><span>09</span><b>Environmentally friendly</b></li>
-      <li><span>10</span><b>As little design as possible</b></li>
+      <li><details><summary><span>01</span><b>Innovative</b></summary><div class="pd"><p>Technology keeps opening new possibilities, and design should move with it instead of copying what already exists. Innovation here means a better way to do the task, not novelty for its own sake.</p><p class="check"><em>The review looks for:</em> Copied patterns with no reason behind them, and obvious better interactions the platform already allows.</p></div></details></li>
+      <li><details><summary><span>02</span><b>Useful</b></summary><div class="pd"><p>A product is bought to be used. Everything on the screen should help with that, and anything that distracts from it works against the product.</p><p class="check"><em>The review looks for:</em> Elements that don&#x27;t serve the user&#x27;s goal, a buried primary task, or something the task needs that&#x27;s missing.</p></div></details></li>
+      <li><details><summary><span>03</span><b>Aesthetic</b></summary><div class="pd"><p>People live with the things they use every day, so how they look and feel matters. Only well-made things can be beautiful.</p><p class="check"><em>The review looks for:</em> Inconsistent spacing, alignment, type scale and color, visual noise, and weak hierarchy.</p></div></details></li>
+      <li><details><summary><span>04</span><b>Understandable</b></summary><div class="pd"><p>Good design makes a product explain itself. At best, nobody needs a manual or a tooltip to know what to do.</p><p class="check"><em>The review looks for:</em> Unclear labels, icons without text, ambiguous buttons, and states or next steps you have to guess.</p></div></details></li>
+      <li><details><summary><span>05</span><b>Unobtrusive</b></summary><div class="pd"><p>Products are tools, not works of art. They should stay neutral and leave room for the person using them.</p><p class="check"><em>The review looks for:</em> Decoration competing with content, loud colors, badges and animation where calm would do, and branding that shouts over the task.</p></div></details></li>
+      <li><details><summary><span>06</span><b>Honest</b></summary><div class="pd"><p>Design shouldn&#x27;t make a product look more powerful or valuable than it is, and it shouldn&#x27;t manipulate people into decisions.</p><p class="check"><em>The review looks for:</em> Dark patterns: fake urgency, hidden costs, preselected upsells, confirmshaming, and misleading weight between options.</p></div></details></li>
+      <li><details><summary><span>07</span><b>Long-lasting</b></summary><div class="pd"><p>Good design avoids fashion, so it doesn&#x27;t look dated in a year. It stays useful for a long time, even in a world that throws things away.</p><p class="check"><em>The review looks for:</em> Trend-driven styling with no functional reason, the kind that will need a redesign once the trend passes.</p></div></details></li>
+      <li><details><summary><span>08</span><b>Thorough down to the last detail</b></summary><div class="pd"><p>Nothing should be left to chance. Care and precision in the details show respect for the people who use the product.</p><p class="check"><em>The review looks for:</em> Missing empty, loading and error states, truncation, inconsistent components, and accessibility gaps like contrast and tap targets.</p></div></details></li>
+      <li><details><summary><span>09</span><b>Environmentally friendly</b></summary><div class="pd"><p>Design should conserve resources and avoid waste across the product&#x27;s whole life. On screens, that includes data, energy and people&#x27;s time.</p><p class="check"><em>The review looks for:</em> Heavy assets, autoplaying video, needless animation, and extra steps or pages a flow doesn&#x27;t need.</p></div></details></li>
+      <li><details><summary><span>10</span><b>As little design as possible</b></summary><div class="pd"><p>Less, but better. Focus on what&#x27;s essential so the product isn&#x27;t weighed down by everything else, and get back to simplicity.</p><p class="check"><em>The review looks for:</em> Redundant elements, duplicate calls to action, and ornament without purpose. Of every element it asks: what breaks if you remove it?</p></div></details></li>
     </ol>
   </section>
 

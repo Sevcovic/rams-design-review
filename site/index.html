@@ -44,6 +44,8 @@
   .scene .frame { display: block; width: 100%; background: #141413; border: 0; border-radius: 12px; padding: 14px 10px; cursor: pointer; }
   .scene .frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .scene canvas { display: block; width: 100%; }
+  .make { font-size: 13px; color: var(--muted); margin-top: 10px; text-align: center; }
+  .make a { color: var(--accent); text-underline-offset: 3px; }
   .actions { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
   .btn {
     display: inline-block; padding: 12px 20px; border-radius: 999px;
@@ -143,6 +145,7 @@
     </div>
     <figure class="scene">
       <button class="frame" type="button" aria-label="Change the orange detail on the portrait"><canvas id="scene" role="img" aria-label="Portrait of Petr Ševcovic drawn with code characters, with one orange detail"></canvas></button>
+      <figcaption class="make">Want your own? <a href="https://code-portrait.sevcovicp.workers.dev">Make one here</a></figcaption>
     </figure>
   </div>
 

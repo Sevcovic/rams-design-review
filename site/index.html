@@ -60,13 +60,26 @@
   .steps p { margin-bottom: 16px; }
   .steps p:last-child { margin-bottom: 0; }
   .steps strong { font-weight: 600; }
-  .sample {
-    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
-    padding: 24px; font-size: 15px;
-  }
-  .sample .sev { color: var(--accent); font-weight: 600; }
-  .sample dl { display: grid; grid-template-columns: 72px 1fr; gap: 6px 12px; margin-top: 14px; }
-  .sample dt { color: var(--muted); }
+  .steps a { color: var(--fg); text-underline-offset: 3px; }
+  .ex-head { display: grid; grid-template-columns: 200px 1fr; gap: 32px; align-items: start; }
+  .ex-head img { width: 100%; height: auto; display: block; }
+  .ex-title { font-weight: 600; }
+  .ex-ctx { color: var(--muted); font-size: 15px; margin-top: 8px; }
+  .ex-ctx b { font-weight: 500; color: var(--fg); }
+  .verdict { font-size: 22px; line-height: 1.35; font-weight: 500; letter-spacing: -0.01em; margin-top: 24px; }
+  .issues { margin-top: 48px; border-top: 1px solid var(--line); }
+  .issues article { padding: 24px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .issues article > p { font-weight: 600; font-size: 17px; }
+  .issues dl { display: grid; grid-template-columns: 72px 1fr; gap: 6px 12px; margin-top: 12px; }
+  .issues dt { color: var(--muted); }
+  .sev { display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-right: 10px; vertical-align: 2px; color: var(--muted); }
+  .sev.high { color: var(--accent); }
+  .sev.med { color: var(--fg); }
+  table { width: 100%; border-collapse: collapse; margin-top: 40px; font-size: 15px; }
+  th { text-align: left; font-weight: 500; color: var(--muted); font-size: 13px; padding: 0 0 10px; border-bottom: 1px solid var(--line); }
+  td { padding: 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td:first-child { width: 48%; padding-right: 16px; }
+  td.bad { color: var(--accent); }
   .caption { color: var(--muted); font-size: 14px; margin-top: 12px; }
   pre {
     background: var(--card); border: 1px solid var(--line); border-radius: 12px;
@@ -85,8 +98,11 @@
     h1 { font-size: 34px; }
     .lead { font-size: 18px; }
     section { margin-top: 72px; }
-    .sample dl { grid-template-columns: 1fr; gap: 2px; }
-    .sample dd { margin-bottom: 8px; }
+    .ex-head { grid-template-columns: 1fr; gap: 24px; }
+    .ex-head img { max-width: 220px; }
+    .verdict { font-size: 19px; }
+    .issues dl { grid-template-columns: 1fr; gap: 2px; }
+    .issues dd { margin-bottom: 8px; }
   }
 </style>
 </head>
@@ -120,21 +136,101 @@
     <h2>How it works</h2>
     <p><strong>Share the design.</strong> A screenshot, a Figma link, a live URL or UI code.</p>
     <p><strong>Answer up to four questions.</strong> The goal, the users, how finished it is, and what it has to follow. It skips anything the design already answers.</p>
-    <p><strong>Get the review.</strong> A one-line verdict, issues ranked by severity with a concrete fix for each, and a table covering all ten principles. Only real problems are reported.</p>
+    <p><strong>Get the review.</strong> A one-line verdict, issues ranked by severity with a concrete fix for each, and a table covering all ten principles. Only real problems are reported. <a href="#example">See an example</a>.</p>
   </section>
 
-  <section>
-    <h2>Sample finding</h2>
-    <div class="sample">
-      <div><span class="sev">High</span> · No "today" or "next shift" emphasis</div>
-      <dl>
-        <dt>Where</dt><dd>This week's shift list</dd>
-        <dt>Problem</dt><dd>All shifts look identical. Nothing shows which one is next.</dd>
-        <dt>Breaks</dt><dd>#2 Useful</dd>
-        <dt>Fix</dt><dd>Highlight the next shift with a "Today" or "Tomorrow" label and dim past ones.</dd>
-      </dl>
+  <section id="example">
+    <h2>Example review</h2>
+    <div class="ex-head">
+      <img src="forgettable.webp" width="432" height="881" alt="Forgettable app: a list of home checks grouped into Hall, Kitchen and Car, each with a toggle" loading="lazy">
+      <div>
+        <p class="ex-title">Forgettable, home checklist app</p>
+        <p class="ex-ctx"><b>Assumed:</b> goal is seeing at a glance which checks are done; users are household members; final hi-fi; iOS.</p>
+        <p class="verdict">The toggles mean two different things, so you can't tell whether a check is done or just a reminder that is switched on.</p>
+      </div>
     </div>
-    <p class="caption">From a review of a staff scheduling app.</p>
+
+    <div class="issues">
+      <article>
+        <p><span class="sev high">High</span> Toggle meaning is ambiguous</p>
+        <dl>
+          <dt>Where</dt><dd>Every row</dd>
+          <dt>Problem</dt><dd>"Lock house doors · Anna · 08:12" reads as done. "Water the plants · When connecting to Home Wi-Fi" reads as a rule. The same switch can't say both "completed" and "reminder enabled".</dd>
+          <dt>Breaks</dt><dd>#4 Understandable · #6 Honest</dd>
+          <dt>Fix</dt><dd>Pick one meaning. For completion, use a checkbox and show who and when. Move trigger rules into the item's settings.</dd>
+        </dl>
+      </article>
+      <article>
+        <p><span class="sev high">High</span> Nothing shows what still needs doing</p>
+        <dl>
+          <dt>Where</dt><dd>Whole list</dd>
+          <dt>Problem</dt><dd>Done and pending items look the same apart from the switch, and there's no state for overdue. The main question, "did we forget anything?", has no answer at a glance.</dd>
+          <dt>Breaks</dt><dd>#2 Useful</dd>
+          <dt>Fix</dt><dd>Add a summary at the top ("2 of 6 done") and visually dim done items, or move them below the pending ones.</dd>
+        </dl>
+      </article>
+      <article>
+        <p><span class="sev med">Medium</span> ✕ in the off state reads as failure</p>
+        <dl>
+          <dt>Where</dt><dd>Off toggles</dd>
+          <dt>Problem</dt><dd>A cross signals an error or something missed. "Feed cat" at 9:41 isn't failed, it's just later today.</dd>
+          <dt>Breaks</dt><dd>#4 Understandable · #5 Unobtrusive</dd>
+          <dt>Fix</dt><dd>Use an empty neutral state. Save warning styling for actually overdue items.</dd>
+        </dl>
+      </article>
+      <article>
+        <p><span class="sev med">Medium</span> "Forgettable" as a noun</p>
+        <dl>
+          <dt>Where</dt><dd>"Add Forgettable" button</dd>
+          <dt>Problem</dt><dd>It's a fine app name but unclear as an object. New users won't know what they're adding.</dd>
+          <dt>Breaks</dt><dd>#4 Understandable</dd>
+          <dt>Fix</dt><dd>"Add check" or "Add reminder".</dd>
+        </dl>
+      </article>
+      <article>
+        <p><span class="sev med">Medium</span> Inconsistent row details</p>
+        <dl>
+          <dt>Where</dt><dd>Subtitles</dd>
+          <dt>Problem</dt><dd>One row shows a person and time, others a trigger, "Lock car doors" shows nothing, and only "Charge the car" names its alert type ("Alarm").</dd>
+          <dt>Breaks</dt><dd>#8 Thorough</dd>
+          <dt>Fix</dt><dd>Same structure for every row: status line first (who · when, or due time), trigger as secondary detail.</dd>
+        </dl>
+      </article>
+      <article>
+        <p><span class="sev low">Low</span> Heavy chrome for six items</p>
+        <dl>
+          <dt>Where</dt><dd>Section headers, cards</dd>
+          <dt>Problem</dt><dd>Widely tracked all-caps headers, large gaps and a card per item fit only six checks on a screen.</dd>
+          <dt>Breaks</dt><dd>#10 As little design as possible</dd>
+          <dt>Fix</dt><dd>Group items in one card per room with dividers, and use quieter sentence-case headers.</dd>
+        </dl>
+      </article>
+      <article>
+        <p><span class="sev low">Low</span> Android-style caps on iOS</p>
+        <dl>
+          <dt>Where</dt><dd>"EDIT", "ADD FORGETTABLE"</dd>
+          <dt>Problem</dt><dd>All-caps buttons and a floating action button come from Material Design and feel foreign next to iOS system UI.</dd>
+          <dt>Breaks</dt><dd>#3 Aesthetic · #7 Long-lasting</dd>
+          <dt>Fix</dt><dd>Sentence-case labels; consider a + in the navigation bar instead of the floating button.</dd>
+        </dl>
+      </article>
+    </div>
+
+    <table>
+      <thead><tr><th>Principle</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>01 Innovative</td><td>OK. Wi-Fi and location triggers are a smart use of the phone.</td></tr>
+        <tr><td>02 Useful</td><td class="bad">1 issue</td></tr>
+        <tr><td>03 Aesthetic</td><td class="bad">1 issue</td></tr>
+        <tr><td>04 Understandable</td><td class="bad">3 issues</td></tr>
+        <tr><td>05 Unobtrusive</td><td class="bad">secondary</td></tr>
+        <tr><td>06 Honest</td><td class="bad">secondary</td></tr>
+        <tr><td>07 Long-lasting</td><td class="bad">secondary</td></tr>
+        <tr><td>08 Thorough</td><td class="bad">1 issue</td></tr>
+        <tr><td>09 Environmentally friendly</td><td>OK</td></tr>
+        <tr><td>10 As little design as possible</td><td class="bad">1 issue</td></tr>
+      </tbody>
+    </table>
   </section>
 
   <section class="install">

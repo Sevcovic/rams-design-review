@@ -2,6 +2,9 @@
   "name": "rams-design-review",
   "compatibility_date": "2026-10-26",
   "workers_dev": true,
+  "routes": [
+    { "pattern": "rams-design-review.petrbuild.app", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./site"
   }
